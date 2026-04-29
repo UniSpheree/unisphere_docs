@@ -31,8 +31,10 @@ These are the expected dependencies listed within ``pubspec.yaml``:
 
 Contents
 --------
-
 .. toctree::
+   installation
+
+
 
 
 
