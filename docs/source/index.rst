@@ -36,6 +36,7 @@ Contents
 
    installation
    landing_page
+   main
 
 
 
