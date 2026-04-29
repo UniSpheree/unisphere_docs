@@ -17,31 +17,77 @@ Imports
    import 'package:flutter_map/flutter_map.dart';
    import 'package:latlong2/latlong.dart';
 
-`material.dart` provides the core Flutter UI components. ``app_footer.dart`` and
-``header.dart`` provide shared layout widgets used by the landing page.
+Imports material.dart as it acts as the framework for flutter. Import standardised widgets, 
+``app_footer.dart`` and ``header.dart``, for easier navigation and cleaner workspace. 
+The screen imports are for navigation through ``MaterialPageRoute``, found in classes ``LandingPage()``,
+``_HeroText()``, ``_HeroVisualState()``, and ``_CTASection()``. The ``flutter_map`` and 
+``latlong.dart`` import are for the live interactive maps in the class ``_HeroVisual()``,
+which also calculates the latitude of a given location.
 
-Navigation using ``MaterialPageRoute`` appears in ``LandingPage``, ``_HeroText``,
-``_HeroVisualState``, and ``_CTASection``. The map imports,
-``package:flutter_map/flutter_map.dart`` and ``package:latlong2/latlong.dart``, are
-used in ``_HeroVisualState`` to render ``FlutterMap`` and define event coordinates via
-``LatLng``.
+Main Landing Page Widget
+------------------------
+.. code-block:: dart
 
-Page Composition
-----------------
+  class LandingPage extends StatelessWidget {
+    const LandingPage({super.key});
 
-``LandingPage`` builds the screen in this order:
-
-1. ``AppHeader``: top navigation and account actions.
-2. ``_HeroSection``: headline, feature bullets, and map preview.
-3. ``_StatsSection``: key metrics in a compact summary row.
-4. ``_AudienceSection``: attendee and organiser value panels.
-5. ``_HowItWorksSection``: three-step explainer cards.
-6. ``_CTASection``: final call-to-action banner.
-7. ``AppFooter``: page footer links and information.
-
-Everything is wrapped in a ``SingleChildScrollView`` so the full landing page scrolls
-as one continuous screen.
-
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              AppHeader(
+                onHostEventTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateEventScreen(),
+                    ),
+                  );
+                },
+                onRegisterTap: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                onFindEventsTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DiscoverEventScreen(),
+                    ),
+                  );
+                },
+                onCreateEventsTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateEventScreen(),
+                    ),
+                  );
+                },
+                onMyTicketsTap: () {},
+                onAboutTap: () {},
+                onSignInTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                showProfile: false,
+              ),
+              _HeroSection(),
+              _StatsSection(),
+              _AudienceSection(),
+              _HowItWorksSection(),
+              _CTASection(),
+              const AppFooter(),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+The ``LandingPage`` widget builds a scrollable ``Scaffold`` that presents the ``AppHeader`` first,
+then stacks the main sections (hero, stats, audience, how-it-works, and CTA) before the footer.
+Header actions provide immediate navigation to register, sign in, discover events, or create an event.
 
 
 
