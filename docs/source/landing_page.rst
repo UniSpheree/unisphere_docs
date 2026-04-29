@@ -196,6 +196,48 @@ It renders the child inside a full-width container with shared spacing defaults 
 max width for consistent section alignment.
 
 
+_HeroSection
+------------
+.. code-block:: dart
+
+  class _HeroSection extends StatelessWidget {
+    const _HeroSection();
+
+    @override
+    Widget build(BuildContext context) {
+      final width = MediaQuery.of(context).size.width;
+      final isMobile = width < 920;
+
+      return _SectionContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+        child: isMobile
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  _HeroText(),
+                  SizedBox(height: 40),
+                  _HeroVisual(),
+                ],
+              )
+            : const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(flex: 11, child: _HeroText()),
+                  SizedBox(width: 40),
+                  Expanded(flex: 10, child: _HeroVisual()),
+                ],
+              ),
+      );
+    }
+  }
+
+This class is a stateless widget dynamically displays the ``_HeroText()``, 
+and ``_HeroVisual()`` widgets within a wrapper. The attributes defined are to check
+the user's screen and dynamically change the format to a smaller non-expanding column
+if true.
+
+
+
 
 
 
