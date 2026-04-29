@@ -159,6 +159,44 @@ AppTextStyles
 This class stores reusable typography styles for headings, section text, 
 cards, and body content.
 
+_SectionContainer
+-----------------
+.. code-block:: dart
+
+  class _SectionContainer extends StatelessWidget {
+    final Widget child;
+    final EdgeInsetsGeometry? padding;
+    final Color? color;
+
+    const _SectionContainer({required this.child, this.padding, this.color});
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        width: double.infinity,
+        color: color,
+        padding:
+            padding ??
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sectionX,
+              vertical: AppSpacing.sectionY,
+            ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: AppSpacing.maxWidth),
+            child: child,
+          ),
+        ),
+      );
+    }
+  }
+
+This wrapper takes a required ``child`` widget plus optional ``padding`` and ``color`` values.
+It renders the child inside a full-width container with shared spacing defaults and a constrained
+max width for consistent section alignment.
+
+
+
 
 
 
