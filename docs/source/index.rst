@@ -1,10 +1,8 @@
-Welcome to Lumache's documentation!
-===================================
+Welcome to Unisphere's documentation!
+=====================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+**Unisphere** is a event-discovery website for university students,
+aimed towards students who are looking for a smoother experience when booking events.
 
 Check out the :doc:`usage` section for further information, including
 how to :ref:`installation` the project.
@@ -13,10 +11,28 @@ how to :ref:`installation` the project.
 
    This project is under active development.
 
+Dependencies
+------------
+These are the expected dependencies listed within ``pubspec.yaml``:
+
+.. code-block:: yaml
+
+   environment:
+     sdk: ^3.9.2
+
+   dependencies:
+     flutter:
+       sdk: flutter
+     cupertino_icons: ^1.0.8
+     image_picker: ^1.0.7
+     flutter_map: ^7.0.2
+     latlong2: ^0.9.1
+
+
 Contents
 --------
 
 .. toctree::
 
-   usage
-   api
+
+
