@@ -85,9 +85,38 @@ Main Landing Page Widget
       );
     }
   }
-The ``LandingPage`` widget builds a scrollable ``Scaffold`` that presents the ``AppHeader`` first,
+The ``LandingPage`` class builds a scrollable ``Scaffold`` that presents the ``AppHeader`` first,
 then stacks the main sections (hero, stats, audience, how-it-works, and CTA) before the footer.
 Header actions provide immediate navigation to register, sign in, discover events, or create an event.
+
+AppColors
+---------
+.. code-block:: dart
+
+  class AppColors {
+    static const background = Color(0xfff5f7fb);
+    static const surface = Colors.white;
+    static const primary = Color(0xff4f46e5);
+    static const primaryDark = Color(0xff3730a3);
+    static const accent = Color(0xffeef2ff);
+    static const text = Color(0xff111827);
+    static const muted = Color(0xff6b7280);
+    static const border = Color(0xffe5e7eb);
+  }
+
+This function centralises the landing page color palette into reusable constants.
+
+AppSpacing
+----------
+.. code-block:: dart
+
+  class AppSpacing {
+    static const double sectionY = 90;
+    static const double sectionX = 24;
+    static const double maxWidth = 1200;
+  }
+
+This function defines shared layout values for section padding and content width.
 
 
 
