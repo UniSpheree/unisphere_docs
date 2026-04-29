@@ -104,7 +104,7 @@ AppColors
     static const border = Color(0xffe5e7eb);
   }
 
-This function centralises the landing page color palette into reusable constants.
+This class centralises the landing page color palette into reusable constants.
 
 AppSpacing
 ----------
@@ -116,7 +116,52 @@ AppSpacing
     static const double maxWidth = 1200;
   }
 
-This function defines shared layout values for section padding and content width.
+This class defines shared layout values for section padding and content width.
+
+AppTextStyles
+-------------
+.. code-block:: dart
+
+  class AppTextStyles {
+    static const TextStyle heroTitle = TextStyle(
+      fontSize: 52,
+      fontWeight: FontWeight.w800,
+      color: AppColors.text,
+      height: 1.1,
+    );
+
+    static const TextStyle sectionTitle = TextStyle(
+      fontSize: 36,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
+      height: 1.2,
+    );
+
+    static const TextStyle sectionSubtitle = TextStyle(
+      fontSize: 17,
+      color: AppColors.muted,
+      height: 1.6,
+    );
+
+    static const TextStyle cardTitle = TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: AppColors.text,
+    );
+
+    static const TextStyle body = TextStyle(
+      fontSize: 15,
+      color: AppColors.muted,
+      height: 1.6,
+    );
+  }
+
+This class stores reusable typography styles for headings, section text, 
+cards, and body content.
+
+
+
+
 
 
 
