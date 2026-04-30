@@ -562,7 +562,708 @@ _HeroVisualState
     }
   }
 
-The _HeroVisualState class is the state class for _HeroVisual. It manages the 
-search text controller, builds the map preview container, and displays the 
-interactive FlutterMap with event markers. It also handles search submission 
-by navigating to DiscoverEventScreen with the entered query.
+Here we define the state of the _HeroVisual class. We define the search text controller used by the
+hero search bar and the layout that builds the map preview container. We also define the logic that
+displays the interactive FlutterMap with event markers and handles search submission by navigating
+to DiscoverEventScreen with the entered query.
+
+_EventMarkerData
+----------------
+.. code-block:: dart
+
+  class _EventMarkerData {
+    final String title;
+    final String subtitle;
+    final LatLng location;
+    final int count;
+    final Color color;
+
+    const _EventMarkerData({
+      required this.title,
+      required this.subtitle,
+      required this.location,
+      required this.count,
+      required this.color,
+    });
+  }
+
+This data class stores the information needed for each map marker entry. It defines the title,
+subtitle, location, attendee count, and display color used by the hero map.
+
+_EventBubble
+------------
+.. code-block:: dart
+
+  class _EventBubble extends StatelessWidget {
+    final int count;
+    final Color color;
+
+    const _EventBubble({required this.count, required this.color});
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.92),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.16),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '$count',
+          style: const TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+      );
+    }
+  }
+
+The _EventBubble class is a StatelessWidget. It takes a required count and color value as parameters
+and uses them to build a circular event marker. It returns a Container widget that displays the
+count inside a styled bubble.
+
+_StatsSection
+-------------
+.. code-block:: dart
+
+  class _StatsSection extends StatelessWidget {
+    const _StatsSection();
+
+    @override
+    Widget build(BuildContext context) {
+      return _SectionContainer(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          runSpacing: 20,
+          spacing: 20,
+          children: const [
+            _StatItem(value: '10K+', label: 'Events discovered'),
+            _StatItem(value: '2K+', label: 'Active organisers'),
+            _StatItem(value: '25+', label: 'Event categories'),
+            _StatItem(value: '99%', label: 'Mobile-friendly experience'),
+          ],
+        ),
+      );
+    }
+  }
+
+The _StatsSection class is a StatelessWidget. It builds the landing page statistics area and returns
+a Wrap widget containing the key platform metric items. It presents the numbers in a responsive
+layout that can adapt to smaller screens.
+
+_StatItem
+---------
+.. code-block:: dart
+
+  class _StatItem extends StatelessWidget {
+    final String value;
+    final String label;
+
+    const _StatItem({required this.value, required this.label});
+
+    @override
+    Widget build(BuildContext context) {
+      return SizedBox(
+        width: 240,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: const TextStyle(color: AppColors.muted, fontSize: 15),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+The _StatItem class is a StatelessWidget. It takes a value and label as parameters and formats them
+into a single statistic block. It returns a SizedBox widget containing the metric value and its
+supporting label.
+
+_AudienceSection
+----------------
+.. code-block:: dart
+
+  class _AudienceSection extends StatelessWidget {
+    const _AudienceSection();
+
+    @override
+    Widget build(BuildContext context) {
+      return _SectionContainer(
+        child: Column(
+          children: [
+            const Text(
+              'Built for both sides of the event experience',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.sectionTitle,
+            ),
+            const SizedBox(height: 16),
+            const SizedBox(
+              width: 760,
+              child: Text(
+                'UniSphere connects attendees looking for memorable local experiences '
+                'with organisers who need simple, powerful tools to grow successful events.',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.sectionSubtitle,
+              ),
+            ),
+            const SizedBox(height: 48),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isMobile = constraints.maxWidth < 900;
+                return isMobile
+                    ? const Column(
+                        children: [
+                          _AudiencePanel(
+                            title: 'For Attendees',
+                            subtitle:
+                                'Find what’s happening nearby and plan better with friends.',
+                            icon: Icons.explore_rounded,
+                            items: [
+                              'Browse events on a live interactive map',
+                              'Filter by category, date, price, and distance',
+                              'Save favourites and revisit them later',
+                              'Share events with friends and discover together',
+                            ],
+                          ),
+                          SizedBox(height: 24),
+                          _AudiencePanel(
+                            title: 'For Organisers',
+                            subtitle:
+                                'Launch, promote, and manage events with less friction.',
+                            icon: Icons.campaign_rounded,
+                            items: [
+                              'Create event listings quickly',
+                              'Sell and manage tickets in one place',
+                              'Track attendance and engagement',
+                              'Promote events with a clearer organiser dashboard',
+                            ],
+                          ),
+                        ],
+                      )
+                    : const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _AudiencePanel(
+                              title: 'For Attendees',
+                              subtitle:
+                                  'Find what’s happening nearby and plan better with friends.',
+                              icon: Icons.explore_rounded,
+                              items: [
+                                'Browse events on a live interactive map',
+                                'Filter by category, date, price, and distance',
+                                'Save favourites and revisit them later',
+                                'Share events with friends and discover together',
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 24),
+                          Expanded(
+                            child: _AudiencePanel(
+                              title: 'For Organisers',
+                              subtitle:
+                                  'Launch, promote, and manage events with less friction.',
+                              icon: Icons.campaign_rounded,
+                              items: [
+                                'Create event listings quickly',
+                                'Sell and manage tickets in one place',
+                                'Track attendance and engagement',
+                                'Promote events with a clearer organiser dashboard',
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+The _AudienceSection class is a StatelessWidget. It builds the section that compares the experience
+for attendees and organisers. It returns either a Row or a Column layout depending on the screen
+width so the section remains responsive.
+
+_AudiencePanel
+--------------
+.. code-block:: dart
+
+  class _AudiencePanel extends StatelessWidget {
+    final String title;
+    final String subtitle;
+    final IconData icon;
+    final List<String> items;
+
+    const _AudiencePanel({
+      required this.title,
+      required this.subtitle,
+      required this.icon,
+      required this.items,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: AppColors.accent,
+              child: Icon(icon, color: AppColors.primary),
+            ),
+            const SizedBox(height: 18),
+            Text(title, style: AppTextStyles.cardTitle.copyWith(fontSize: 24)),
+            const SizedBox(height: 10),
+            Text(subtitle, style: AppTextStyles.body),
+            const SizedBox(height: 20),
+            ...items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 3),
+                      child: Icon(
+                        Icons.check_circle_rounded,
+                        size: 18,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(item, style: AppTextStyles.body)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+The _AudiencePanel class is a StatelessWidget. It takes a title, subtitle, icon, and list of items as
+parameters and uses them to describe one audience group. It returns a styled card widget that shows
+the group details and checklist items.
+
+_HowItWorksSection
+------------------
+.. code-block:: dart
+
+  class _HowItWorksSection extends StatelessWidget {
+    const _HowItWorksSection();
+
+    @override
+    Widget build(BuildContext context) {
+      return _SectionContainer(
+        color: Colors.white,
+        child: Column(
+          children: [
+            const Text(
+              'How UniSphere works',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.sectionTitle,
+            ),
+            const SizedBox(height: 14),
+            const Text(
+              'A simple flow for discovering events or launching your own.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.sectionSubtitle,
+            ),
+            const SizedBox(height: 46),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isMobile = constraints.maxWidth < 900;
+                return isMobile
+                    ? const Column(
+                        children: [
+                          _StepCard(
+                            step: '01',
+                            title: 'Explore',
+                            text:
+                                'Search through local events using map-based discovery and smart filters.',
+                            icon: Icons.search_rounded,
+                          ),
+                          SizedBox(height: 18),
+                          _StepCard(
+                            step: '02',
+                            title: 'Choose',
+                            text:
+                                'Save, share, or book the events that match your interests and schedule.',
+                            icon: Icons.favorite_border_rounded,
+                          ),
+                          SizedBox(height: 18),
+                          _StepCard(
+                            step: '03',
+                            title: 'Host',
+                            text:
+                                'Create listings, manage attendance, and promote events from one organiser space.',
+                            icon: Icons.event_available_rounded,
+                          ),
+                        ],
+                      )
+                    : const Row(
+                        children: [
+                          Expanded(
+                            child: _StepCard(
+                              step: '01',
+                              title: 'Explore',
+                              text:
+                                  'Search through local events using map-based discovery and smart filters.',
+                              icon: Icons.search_rounded,
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: _StepCard(
+                              step: '02',
+                              title: 'Choose',
+                              text:
+                                  'Save, share, or book the events that match your interests and schedule.',
+                              icon: Icons.favorite_border_rounded,
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                            child: _StepCard(
+                              step: '03',
+                              title: 'Host',
+                              text:
+                                  'Create listings, manage attendance, and promote events from one organiser space.',
+                              icon: Icons.event_available_rounded,
+                            ),
+                          ),
+                        ],
+                      );
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+The _HowItWorksSection class is a StatelessWidget. It builds the section that explains the user
+journey in three steps. It returns a responsive layout that displays the step cards either in a row
+or in a stacked column depending on screen width.
+
+_StepCard
+---------
+.. code-block:: dart
+
+  class _StepCard extends StatelessWidget {
+    final String step;
+    final String title;
+    final String text;
+    final IconData icon;
+
+    const _StepCard({
+      required this.step,
+      required this.title,
+      required this.text,
+      required this.icon,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        padding: const EdgeInsets.all(26),
+        decoration: BoxDecoration(
+          color: const Color(0xfff9fafb),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              step,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 18),
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: AppColors.accent,
+              child: Icon(icon, color: AppColors.primary),
+            ),
+            const SizedBox(height: 18),
+            Text(title, style: AppTextStyles.cardTitle),
+            const SizedBox(height: 10),
+            Text(text, style: AppTextStyles.body),
+          ],
+        ),
+      );
+    }
+  }
+
+The _StepCard class is a StatelessWidget. It takes a step number, title, description, and icon as
+parameters and uses them to represent one step in the user journey. It returns a card widget that
+displays the step label, icon, title, and supporting text.
+
+_CTASection
+-----------
+.. code-block:: dart
+
+  class _CTASection extends StatelessWidget {
+    const _CTASection();
+
+    @override
+    Widget build(BuildContext context) {
+      return _SectionContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 90),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 42),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.primary, AppColors.primaryDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.22),
+                blurRadius: 30,
+                offset: const Offset(0, 16),
+              ),
+            ],
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 850;
+
+              return isMobile
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Start discovering or hosting with UniSphere',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        const Text(
+                          'Bring attendees and organisers together on one modern platform.',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DiscoverEventScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.primary,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 22,
+                                  vertical: 18,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              child: const Text('Explore Events'),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateEventScreen(),
+                                  ),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white30),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 22,
+                                  vertical: 18,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              child: const Text('Create an Event'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Start discovering or hosting with UniSphere',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.2,
+                                ),
+                              ),
+                              SizedBox(height: 14),
+                              Text(
+                                'Bring attendees and organisers together on one modern platform.',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 16,
+                                  height: 1.6,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DiscoverEventScreen(),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                  Colors.white,
+                                ),
+                                foregroundColor: MaterialStatePropertyAll(
+                                  AppColors.primary,
+                                ),
+                                elevation: MaterialStatePropertyAll(0),
+                                padding: MaterialStatePropertyAll(
+                                  EdgeInsets.symmetric(
+                                    horizontal: 22,
+                                    vertical: 18,
+                                  ),
+                                ),
+                                shape: MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(14),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: const Text('Create Events'),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateEventScreen(),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                foregroundColor: MaterialStatePropertyAll(
+                                  Colors.white,
+                                ),
+                                side: MaterialStatePropertyAll(
+                                  BorderSide(color: Colors.white30),
+                                ),
+                                padding: MaterialStatePropertyAll(
+                                  EdgeInsets.symmetric(
+                                    horizontal: 22,
+                                    vertical: 18,
+                                  ),
+                                ),
+                                shape: MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(14),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: const Text('Create an Event'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+The _CTASection class is a StatelessWidget. It builds the final call-to-action area of the landing
+page and returns a gradient banner with navigation buttons for event discovery and event creation.
