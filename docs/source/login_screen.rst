@@ -1,5 +1,5 @@
-Login Screen
-=============
+login_screen.dart
+=================
 
 ``login_screen.dart`` is the authentication screen that allows a user to sign in to
 UniSphere. It provides the login form, validates the user input, and routes the user
