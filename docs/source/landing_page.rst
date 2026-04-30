@@ -1,5 +1,6 @@
-Landing Page
-============
+=================
+landing_page.dart
+=================
 
 ``landing_page.dart`` is the first screen that a new user sees when they load the
 website, so it acts as the main first impression for the app.
@@ -236,15 +237,332 @@ and ``_HeroVisual()`` widgets within a wrapper. The attributes defined are to ch
 the user's screen and dynamically change the format to a smaller non-expanding column
 if true.
 
+_HeroText
+---------
+.. code-block:: dart
 
+  class _HeroText extends StatelessWidget {
+    const _HeroText();
 
+    @override
+    Widget build(BuildContext context) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.accent,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: const Text(
+              'Event discovery & organiser tools in one platform',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryDark,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Discover local events.\nHost unforgettable ones.',
+            style: AppTextStyles.heroTitle,
+          ),
+          const SizedBox(height: 22),
+          const Text(
+            'UniSphere helps attendees explore nearby events through a live map, '
+            'smart filters, and social discovery tools — while giving organisers '
+            'everything they need to create, promote, manage, and grow events.',
+            style: AppTextStyles.sectionSubtitle,
+          ),
+          const SizedBox(height: 28),
+          const Wrap(
+            spacing: 18,
+            runSpacing: 12,
+            children: [
+              _HeroBullet(text: 'Live event map'),
+              _HeroBullet(text: 'Social sharing'),
+              _HeroBullet(text: 'Ticket management'),
+              _HeroBullet(text: 'Organiser dashboard'),
+            ],
+          ),
+          const SizedBox(height: 34),
+          Wrap(
+            spacing: 14,
+            runSpacing: 14,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DiscoverEventScreen(),
+                    ),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(AppColors.primary),
+                  foregroundColor: MaterialStatePropertyAll(Colors.white),
+                  elevation: MaterialStatePropertyAll(0),
+                  padding: MaterialStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  ),
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(14)),
+                    ),
+                  ),
+                ),
+                child: Text('Discover Events'),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateEventScreen(),
+                    ),
+                  );
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStatePropertyAll(AppColors.primary),
+                  side: MaterialStatePropertyAll(
+                    BorderSide(color: AppColors.border),
+                  ),
+                  padding: MaterialStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  ),
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(14)),
+                    ),
+                  ),
+                ),
+                child: const Text('Host an Event'),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+  }
 
+The _HeroText class is a StatelessWidget. It builds the main hero content for the
+landing page, including the badge, heading, supporting text, feature bullets, and 
+action buttons. It returns a Column widget that lays out the text and navigation 
+controls used in the hero section.
 
+_HeroBullet
+-----------
+.. code-block:: dart
 
+  class _HeroBullet extends StatelessWidget {
+    final String text;
 
+    const _HeroBullet({required this.text});
 
+    @override
+    Widget build(BuildContext context) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.check_circle_rounded,
+            color: AppColors.primary,
+            size: 18,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      );
+    }
+  }
 
+The _HeroBullet class is a StatelessWidget. It takes a required text value as
+a parameter and uses it to build a compact feature bullet with a check icon. It 
+returns a Row widget that displays the icon and label side by side.
 
+_HeroVisual
+-----------
+.. code-block:: dart
 
+  class _HeroVisual extends StatefulWidget {
+    const _HeroVisual();
 
+    static final List<_EventMarkerData> events = [
+      _EventMarkerData(
+        title: 'Tech Meetup',
+        subtitle: 'Today • 6:30 PM',
+        location: LatLng(50.8198, -1.0880), // Portsmouth
+        count: 9,
+        color: Color(0xff9bd36a),
+      ),
+      _EventMarkerData(
+        title: 'Live Music Night',
+        subtitle: 'Fri • 8:00 PM',
+        location: LatLng(51.5072, -0.1276), // London
+        count: 19,
+        color: Color(0xffe8c75f),
+      ),
+      _EventMarkerData(
+        title: 'Food Festival',
+        subtitle: 'Sat • 1:00 PM',
+        location: LatLng(52.4862, -1.8904), // Birmingham
+        count: 12,
+        color: Color(0xff9bd36a),
+      ),
+      _EventMarkerData(
+        title: 'Startup Talks',
+        subtitle: 'Sun • 5:00 PM',
+        location: LatLng(53.4808, -2.2426), // Manchester
+        count: 7,
+        color: Color(0xff9bd36a),
+      ),
+    ];
 
+    @override
+    State<_HeroVisual> createState() => _HeroVisualState();
+  }
+
+The _HeroVisual class is a StatefulWidget. It stores the shared event marker data 
+used by the landing page map and returns an instance of the _HeroVisualState class. 
+The widget is used to display the interactive map preview in the hero section.
+
+_HeroVisualState
+----------------
+.. code-block:: dart
+
+  class _HeroVisualState extends State<_HeroVisual> {
+    late TextEditingController _searchController;
+
+    @override
+    void initState() {
+      super.initState();
+      _searchController = TextEditingController();
+    }
+
+    @override
+    void dispose() {
+      _searchController.dispose();
+      super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        height: 430,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xffeef2ff), Color(0xffffffff)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 30,
+              offset: const Offset(0, 16),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 24,
+              left: 24,
+              right: 24,
+              child: Container(
+                height: 72,
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.search_rounded, color: AppColors.muted),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiscoverEventScreen(
+                                  initialSearchQuery: value,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Search events, categories, places...',
+                          hintStyle: TextStyle(color: AppColors.muted),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        style: const TextStyle(color: AppColors.text),
+                      ),
+                    ),
+                    const Icon(Icons.tune_rounded, color: AppColors.primary),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 24,
+              right: 24,
+              top: 120,
+              bottom: 24,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(22),
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(51.0, -0.8),
+                    initialZoom: 5.5,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.unisphere_app',
+                    ),
+                    MarkerLayer(
+                      markers: _HeroVisual.events.map((event) {
+                        return Marker(
+                          point: event.location,
+                          width: 60,
+                          height: 60,
+                          child: _EventBubble(
+                            count: event.count,
+                            color: event.color,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+The _HeroVisualState class is the state class for _HeroVisual. It manages the 
+search text controller, builds the map preview container, and displays the 
+interactive FlutterMap with event markers. It also handles search submission 
+by navigating to DiscoverEventScreen with the entered query.
