@@ -129,7 +129,7 @@ This section contains the long-form description. The widget substitutes a
 fallback string if no description is available.
 
 Action area and purchase flow
-----------------------------
+-----------------------------
 
 .. code-block:: dart
 
@@ -158,7 +158,7 @@ Note: the documentation references the `PurchasedTicket` helper type used by
 the mock backend to persist ticket objects.
 
 Organizer and owned-ticket states
---------------------------------
+----------------------------------
 
 .. code-block:: dart
 
