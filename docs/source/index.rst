@@ -43,6 +43,7 @@ Contents
    landing_page.dart <landing_page>
    landing_page_logged_in.dart <landing_page_logged_in>
    discover_event_screen.dart <discover_event_screen>
+   event_details_screen.dart <event_details_screen>
    register_screen.dart <register_screen>
    login_screen.dart <login_screen>
    main.dart <main>
