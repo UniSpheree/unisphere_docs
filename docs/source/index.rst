@@ -32,12 +32,18 @@ These are the expected dependencies listed within ``pubspec.yaml``:
 Contents
 --------
 .. toctree::
-   :caption: Front end
+  :maxdepth: 1
 
-   installation
-   landing_page
-   login_screen
-   main
+  installation
+
+.. toctree::
+  :caption: Front end
+  :maxdepth: 1
+
+   landing_page.dart <landing_page>
+   register_screen.dart <register_screen>
+   login_screen.dart <login_screen>
+   main.dart <main>
 
 
 
