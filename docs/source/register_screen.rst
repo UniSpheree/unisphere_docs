@@ -1,10 +1,10 @@
 register_screen.dart
 ====================
 
-``register_screen.dart`` is the account registration screen that allows a new
-user to create a UniSphere account. It collects identity details, validates
-form input, enforces consent to terms, and routes to the logged-in landing
-page when registration succeeds.
+``register_screen.dart`` is the account registration screen for new UniSphere users.
+It gathers identity details, validates the form, checks that the user agrees to the terms,
+and creates the account through the backend before routing the user into the logged-in
+experience.
 
 Imports
 -------
@@ -12,18 +12,16 @@ Imports
 .. code-block:: dart
 
    import 'package:flutter/material.dart';
+   import 'package:flutter/gestures.dart';
    import '../utils/validators.dart';
-   import '../widgets/header.dart';
-   import 'create_event_screen.dart';
-   import 'discover_event_screen.dart';
    import '../widgets/auth_text_field.dart';
    import '../utils/unis.dart';
-   import '../utils/mock_backend.dart';
+   import '../services/sqlite_backend.dart';
 
-``material.dart`` provides the Flutter UI framework for the registration form. 
-The validator, auth text field, university list, and backend utilities support field 
-validation, dropdown data, and account creation. The navigation imports keep the 
-page connected to the rest of the app.
+``material.dart`` provides the Flutter UI framework for the registration form.
+The validator, auth text field, university list, and backend utilities support field
+validation, dropdown data, and account creation. The backend import is important because
+this screen now uses the SQLite-backed registration flow instead of the mock backend.
 
 Main Register Widget
 --------------------
@@ -37,9 +35,10 @@ Main Register Widget
        State<RegisterScreen> createState() => _RegisterScreenState();
     }
 
-The RegisterScreen class is a StatefulWidget. It takes no additional attributes
-and returns an instance of ``_RegisterScreenState`` so the page can manage text
-controllers, UI toggles, and async registration feedback.
+`RegisterScreen` is the top-level `StatefulWidget` for the registration page.
+It creates the state object so the form can manage controllers, password visibility,
+consent handling, and async submission feedback. The widget itself stays lightweight,
+but it is the entry point for the full sign-up experience.
 
 Register Screen State
 ---------------------
@@ -47,35 +46,28 @@ Register Screen State
 .. code-block:: dart
 
     class _RegisterScreenState extends State<RegisterScreen> {
-       final _formKey = GlobalKey<FormState>();
-       final _firstNameController = TextEditingController();
-       final _lastNameController = TextEditingController();
-       final _emailController = TextEditingController();
-       String? _selectedUniversity;
-       final TextEditingController _universityFieldController =
-             TextEditingController();
-       final TextEditingController _universitySearchController =
-             TextEditingController();
-       final _passwordController = TextEditingController();
-       final _confirmPasswordController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    final _firstNameController = TextEditingController();
+    final _lastNameController = TextEditingController();
+    final _emailController = TextEditingController();
+    final TextEditingController _universityFieldController =
+       TextEditingController();
+    final TextEditingController _universitySearchController =
+       TextEditingController();
+    final _passwordController = TextEditingController();
+    final _confirmPasswordController = TextEditingController();
 
-       bool _obscurePassword = true;
-       bool _obscureConfirm = true;
-       bool _agreeToTerms = false;
-       bool _isLoading = false;
+    bool _obscurePassword = true;
+    bool _obscureConfirm = true;
+    bool _agreeToTerms = false;
+    bool _isLoading = false;
     }
 
-Here we define the state for the RegisterScreen workflow. This state class
-stores the form key, all text controllers, visibility flags for password
-fields, the terms agreement toggle, and the loading state used while
-submitting.
-
-The ``_formKey`` validates all fields before registration. The controller
-attributes store first name, last name, email, institution, and password
-inputs. ``_selectedUniversity`` tracks the selected autocomplete option.
-``_obscurePassword`` and ``_obscureConfirm`` switch secure text visibility,
-``_agreeToTerms`` enforces consent, and ``_isLoading`` disables submission
-during backend requests.
+`_RegisterScreenState` is the state holder for the registration workflow.
+It stores the form key, all text controllers, the password visibility flags, the consent
+checkbox state, and the loading state used during submission. The university field
+controllers are especially important because they keep the autocomplete input and the
+stored institution value aligned while the user types or selects a suggestion.
 
 Dispose Method
 --------------
@@ -94,9 +86,9 @@ Dispose Method
        super.dispose();
     }
 
-The dispose method releases all text controllers when the page is removed from
-the widget tree. This prevents memory leaks and keeps the registration screen
-state lifecycle clean.
+The `dispose` method releases all text controllers when the registration screen is removed
+from the widget tree. This prevents controller leaks and keeps the state lifecycle clean for
+a form that uses several text inputs and autocomplete widgets.
 
 Registration Handler
 --------------------
@@ -129,14 +121,14 @@ Registration Handler
        }
     }
 
-The ``_handleRegister`` method controls account creation. It takes no
-parameters and returns ``Future<void>`` because registration is asynchronous.
-The method validates the form, enforces terms acceptance, normalizes submitted
-values, and calls ``MockBackend().register``.
+`_handleRegister` is the asynchronous method that drives account creation.
+It validates the form, enforces the terms agreement, normalises the submitted values, and
+sends the registration payload to `SqliteBackend().register`. The method also controls the
+loading state and the feedback shown to the user after the backend responds.
 
-If registration succeeds, it shows a success SnackBar and clears the navigation
-stack by routing to ``/logged-in``. If registration fails, it shows an error
-SnackBar indicating an existing account.
+If registration succeeds, it shows a success SnackBar and clears the navigation stack by
+routing to `/logged-in`. If registration fails, it shows an error SnackBar indicating an
+existing account.
 
 Terms Guard
 ^^^^^^^^^^^
@@ -148,8 +140,9 @@ Terms Guard
        return;
     }
 
-This guard ensures registration cannot continue unless the user agrees to the
-Terms of Service and Privacy Policy.
+This guard blocks registration until the user has agreed to the Terms of Service and Privacy
+Policy. It is a critical validation step because the account should not be created if legal
+consent has not been given.
 
 Backend Registration Call
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -166,9 +159,11 @@ Backend Registration Call
        isApproved: true,
     );
 
-This backend call submits the prepared registration payload. The method returns
-a boolean success result that determines which feedback and navigation branch is
-executed.
+This backend call submits the cleaned registration data to the SQLite backend. It sends the
+email, password, first name, last name, role, university, and approval status in one place so
+the backend can create the account. The call returns a boolean success result, which determines
+whether the screen shows a success message and redirects the user or displays an error about an
+existing account.
 
 Widget Build
 ------------
@@ -179,88 +174,56 @@ Widget Build
     Widget build(BuildContext context) {
        return Scaffold(
           backgroundColor: const Color(0xFFF0F2F8),
-          body: Column(
-             children: [
-                AppHeader(...),
-                Expanded(
-                   child: Center(
-                      child: SingleChildScrollView(
-                         child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 480),
-                            child: Container(
-                               child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                     children: [
-                                        GestureDetector(...),
-                                        Text(...),
-                                        Row(...),
-                                        AuthTextField(...),
-                                        Autocomplete<String>(...),
-                                        AuthTextField(...),
-                                        AuthTextField(...),
-                                        Row(...),
-                                        ElevatedButton(...),
-                                        Row(...),
-                                     ],
-                                  ),
-                               ),
-                            ),
-                         ),
+          body: Center(
+             child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                child: ConstrainedBox(
+                   constraints: const BoxConstraints(maxWidth: 480),
+                   child: Container(
+                      padding: const EdgeInsets.all(36),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.07),
+                            blurRadius: 24,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(...),
+                            Text(...),
+                            Row(...),
+                            AuthTextField(...),
+                            Autocomplete<String>(...),
+                            AuthTextField(...),
+                            AuthTextField(...),
+                            Row(...),
+                            ElevatedButton(...),
+                            Row(...),
+                          ],
+                        ),
                       ),
                    ),
                 ),
-             ],
+             ),
           ),
        );
     }
 
-The build method returns the main registration interface. It uses a scrollable,
-constrained card layout so the form remains readable across smaller screens and
-desktop widths.
+The `build` method constructs the full registration form UI. It returns a centered scrollable
+card so the page remains readable on both smaller screens and desktop widths. The layout is
+intentionally wrapped in a constrained container because the form contains many stacked inputs
+and needs a stable, narrow reading column.
 
-App Header
-^^^^^^^^^^
 
-.. code-block:: dart
-
-    AppHeader(
-            onHostEventTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CreateEventScreen(),
-                ),
-              );
-            },
-            onRegisterTap: () {},
-            onFindEventsTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const DiscoverEventScreen(),
-                ),
-              );
-            },
-            onCreateEventsTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CreateEventScreen(),
-                ),
-              );
-            },
-            onMyTicketsTap: () {},
-            onAboutTap: () {},
-            onSignInTap: () {
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-            showProfile: false,
-          ),
-
-The shared header provides fast navigation to discovery and event creation.
-``onRegisterTap`` is intentionally inactive because this is already the
-registration screen. ``onSignInTap`` routes users to the login page.
 
 Registration Card
 ^^^^^^^^^^^^^^^^^
@@ -290,9 +253,10 @@ Registration Card
        ),
     )
 
-The registration form is wrapped in a centered card with rounded corners and
-shadow. This separates the form visually from the background and keeps the
-authentication content focused.
+This container is the main visual wrapper for the registration form. It separates the form
+from the page background with rounded corners and shadow, which keeps the focus on the account
+creation flow. Its role is structural rather than functional, but it provides the visual
+framing that makes the authentication screen feel complete.
 
 Logo
 ^^^^
@@ -304,8 +268,10 @@ Logo
        child: Image.asset('assets/image.png', height: 64, fit: BoxFit.contain),
     )
 
-The logo is a tappable brand element that routes users back to the public
-landing page.
+The logo is a tappable brand element that routes the user back to the public landing page.
+It gives the registration screen a clear escape route and keeps the app identity visible at the
+top of the form. The gesture wrapper matters because the image itself acts as navigation rather
+than static decoration.
 
 Title and Intro Text
 ^^^^^^^^^^^^^^^^^^^^
@@ -342,9 +308,10 @@ Name Fields
        ],
     )
 
-The first and last name inputs are displayed side by side to reduce vertical
-space and collect identity details early in the form. Each field uses a simple
-required validator.
+These fields collect the user’s first and last name side by side. They reduce vertical space
+while capturing identity details early in the form, which matches the rest of the compact
+registration layout. Each field uses a simple required validator so the form can reject
+incomplete submissions immediately.
 
 University Email Field
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -358,8 +325,10 @@ University Email Field
        validator: validateUniversityEmail,
     )
 
-This field collects the user's university email and validates it using
-``validateUniversityEmail`` from the shared validators utility.
+This field collects the user’s university email address. It uses the shared university email
+validator to make sure the address matches the expected institutional format before registration
+can continue. The email is later normalised to lowercase in the submission handler, so the stored
+value is consistent.
 
 Institution Autocomplete
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -372,9 +341,11 @@ Institution Autocomplete
        onSelected: (String selection) { ... },
     )
 
-The institution picker combines free typing with a filtered suggestion list from
-``ukUniversities``. It supports quick matching while still validating that the
-selected institution exists in the known dataset.
+This autocomplete field lets the user search for and select their institution from the known
+university list. It supports both typing and suggestion filtering, which makes it easier to find a
+valid institution while still keeping the input constrained to supported values. The selected
+value is mirrored into the visible form controller, so the field and the stored institution stay
+in sync.
 
 Institution Field Validation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -395,9 +366,11 @@ Institution Field Validation
        return null;
     }
 
-This validator enforces three checks: a value must be provided, it must exist
-in the supported university list, and it cannot match the user's own email
-domain institution.
+This validator checks that an institution was provided, that the value exists in the supported
+university list, and that the institution does not match the user’s own email-domain university.
+It protects the registration flow from invalid or contradictory account data. The domain
+comparison is an important subtlety because it prevents users from registering with their own
+university as a disallowed case in this flow.
 
 Password Field
 ^^^^^^^^^^^^^^
@@ -411,8 +384,9 @@ Password Field
        validator: validatePassword,
     )
 
-The password field captures the account password, validates strength using
-``validatePassword``, and hides characters while ``_obscurePassword`` is true.
+This field captures the account password. It uses the shared password validator and hides the
+input while the obscured state is enabled. The field is part of the shared authentication pattern,
+so it behaves consistently with the login screen.
 
 Password Visibility Toggle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -428,8 +402,9 @@ Password Visibility Toggle
        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
     )
 
-This toggle switches password visibility and keeps the icon state synchronized
-with the field behavior.
+This icon button toggles the password field between hidden and visible text. It updates the
+password visibility state so the icon and field behaviour stay aligned. The toggle matters because
+it gives users control over checking the password they entered without leaving the form.
 
 Confirm Password Field
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -452,8 +427,9 @@ Confirm Password Field
        },
     )
 
-The confirm password field ensures the repeated password matches the primary
-password value before registration can continue.
+This field repeats the password entry so the user can confirm the value before submitting the
+form. It validates that the confirmation is not empty and that it matches the primary password
+field. This extra check reduces accidental mismatches before the backend request is made.
 
 Confirm Password Toggle
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -469,34 +445,64 @@ Confirm Password Toggle
        onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
     )
 
-This toggle controls visibility for the confirm password field independently of
-the main password field.
+This icon button toggles visibility for the confirmation field independently of the main
+password field. It keeps the confirmation workflow consistent with the main password input while
+still allowing separate control. The independence matters because users may want to inspect the
+confirmation entry without changing the original password visibility state.
 
 Terms and Privacy Consent
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: dart
 
-    Row(
-       children: [
-          Checkbox(
-             value: _agreeToTerms,
-             onChanged: (v) => setState(() => _agreeToTerms = v ?? false),
-          ),
-          RichText(
-             text: TextSpan(
-                children: [
-                   TextSpan(text: 'Terms of Service'),
-                   TextSpan(text: 'Privacy Policy'),
-                ],
-             ),
-          ),
-       ],
-    )
+      Row(
+          children: [
+               Checkbox(
+                   value: _agreeToTerms,
+                   onChanged: (v) => setState(() => _agreeToTerms = v ?? false),
+               ),
+               Expanded(
+                  child: RichText(
+                     text: TextSpan(
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        children: [
+                           const TextSpan(text: 'I agree to the '),
+                           TextSpan(
+                              text: 'Terms of Service',
+                              style: const TextStyle(
+                                 color: Color(0xFF2D3A8C),
+                                 fontWeight: FontWeight.w600,
+                                 decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                 ..onTap = () {
+                                    Navigator.pushNamed(context, '/terms');
+                                 },
+                           ),
+                           const TextSpan(text: ' and '),
+                           TextSpan(
+                              text: 'Privacy Policy',
+                              style: const TextStyle(
+                                 color: Color(0xFF2D3A8C),
+                                 fontWeight: FontWeight.w600,
+                                 decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                 ..onTap = () {
+                                    Navigator.pushNamed(context, '/privacy');
+                                 },
+                           ),
+                        ],
+                     ),
+                  ),
+               ),
+          ],
+      )
 
-This consent block stores whether the user agrees to legal terms before account
-creation. The highlighted text visually emphasizes the Terms of Service and
-Privacy Policy references.
+This consent block stores whether the user agrees to the legal terms before registration proceeds.
+It combines a checkbox with tappable legal links so the user can review the Terms of Service and
+Privacy Policy directly from the form. The legal links matter because the consent state is not
+just visual; it gates the actual account creation flow.
 
 Create Account Button
 ^^^^^^^^^^^^^^^^^^^^^
@@ -512,9 +518,10 @@ Create Account Button
                 ),
     )
 
-The primary submit button triggers registration through ``_handleRegister``.
-When ``_isLoading`` is true, it disables interaction and shows a progress
-indicator until the backend call completes.
+This button triggers the registration handler. It disables itself and shows a loading indicator
+while the backend request is running so users do not submit the form twice. The loading state is
+important because registration is asynchronous and the UI needs to reflect that the app is waiting
+for a backend response.
 
 Sign In Link
 ^^^^^^^^^^^^
@@ -526,6 +533,7 @@ Sign In Link
        child: const Text('Sign In'),
     )
 
-This footer link routes existing users to the login screen using replacement
-navigation so they do not stack the registration page in history.
-The _RegisterScreenState class stores the text controllers, selected university value, password visibility flags, and submission state for the sign-up form. It returns the full registration experience.
+This footer link routes existing users to the login screen. It uses replacement navigation so the
+registration page does not remain in the back stack after the user moves to sign in. That
+navigation choice keeps the auth flow clean and avoids sending the user back to an unnecessary
+form.
