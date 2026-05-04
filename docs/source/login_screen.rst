@@ -1,9 +1,10 @@
 login_screen.dart
 =================
 
-``login_screen.dart`` is the authentication screen that allows a user to sign in to
-UniSphere. It provides the login form, validates the user input, and routes the user
-to the logged-in dashboard when authentication succeeds.
+``login_screen.dart`` is the authentication screen for signing in to UniSphere.
+It provides the login form, validates credentials, and routes the user to the logged-in
+area when authentication succeeds. The screen is now backed by the SQLite backend, and
+the role-selection logic has been removed from this page.
 
 Imports
 -------
@@ -16,16 +17,13 @@ Imports
    import 'create_event_screen.dart';
    import 'discover_event_screen.dart';
    import '../widgets/auth_header.dart';
-   import '../widgets/auth_text_field.dart';
-   import '../widgets/role_toggle.dart';
-   import '../utils/mock_backend.dart';
+  import '../widgets/auth_text_field.dart';
+  import '../services/sqlite_backend.dart';
 
-`material.dart` provides the Flutter framework and layout widgets used to build the
-screen. The shared header and authentication widgets are imported to keep the login
-page consistent with the rest of the app. The validator utilities and mock backend are
-used to validate credentials and simulate the login process. The role toggle widget is
-imported for the wider authentication flow, although the current screen no longer shows
-role selection.
+`material.dart` provides the Flutter framework and layout widgets used to build the screen.
+The shared authentication text field widget and validator utilities keep the login form
+consistent with the rest of the app. The SQLite backend import is the key source-level update
+here because authentication now runs against the real backend instead of a mock service.
 
 Main Login Widget
 -----------------
@@ -39,9 +37,10 @@ Main Login Widget
      State<LoginScreen> createState() => _LoginScreenState();
    }
 
-The LoginScreen class is a StatefulWidget. It creates and returns an instance of the
-_LoginScreenState class so the login form can manage text input, password visibility,
-loading state, and authentication feedback.
+`LoginScreen` is the top-level `StatefulWidget` for the login page.
+It creates the state object that handles text input, password visibility, loading feedback,
+and the authentication request. The widget itself is lightweight, but it is the entry point
+for the full sign-in workflow.
 
 Login Screen State
 ------------------
@@ -58,14 +57,10 @@ Login Screen State
      bool _isLoading = false;
    }
 
-Here we define the state of the LoginScreen class. This section covers the form key,
-the text controllers, and the boolean values that control password visibility, login
-persistence, and loading feedback.
-
-The _formKey attribute is used to validate the form before login begins. The
-_emailController and _passwordController attributes store the user's input, while the
-_obscurePassword, _keepLoggedIn, and _isLoading attributes track the screen's current
-interaction state.
+`_LoginScreenState` is the state holder for the login form.
+It stores the form key, the email and password controllers, the password visibility flag,
+the remember-me flag, and the loading state. The role-selection note in the source means this
+screen now focuses only on authentication, while role handling is deferred elsewhere in the app.
 
 Dispose Method
 --------------
@@ -79,9 +74,9 @@ Dispose Method
      super.dispose();
    }
 
-The dispose method releases the email and password controllers when the screen is
-removed from the widget tree. This prevents memory leaks and keeps the login screen's
-state lifecycle clean.
+The `dispose` method releases the email and password controllers when the login screen is
+removed from the widget tree. This prevents memory leaks and keeps the authentication screen’s
+state lifecycle tidy.
 
 Login Handler
 -------------
@@ -135,12 +130,11 @@ Login Handler
      }
    }
 
-The _handleLogin method handles the login action for the screen. It takes no input
-parameters and returns a Future<void> because the login flow runs asynchronously. The
-method validates the form, sends the credentials to the mock backend, and updates the
-loading state while the request is running. If the login succeeds, it shows a success
-SnackBar and navigates to the logged-in route while clearing the previous navigation
-stack. If the login fails, it displays an error message using a SnackBar.
+`_handleLogin` is the asynchronous method that drives the sign-in flow.
+It validates the form, lowercases the email, sends the credentials to `SqliteBackend().login`,
+and updates the loading state while waiting for the response. If authentication succeeds, it
+shows a success message and clears the navigation stack to send the user into the logged-in
+route; otherwise, it shows an error message.
 
 Widget Build
 ------------
@@ -185,9 +179,10 @@ Widget Build
      );
    }
 
-The build method is the main widget builder for the LoginScreen state. It returns a
-Scaffold containing the shared app header and a centered login card. The form is wrapped
-in a scroll view and constrained width so the layout stays readable on smaller screens.
+The `build` method assembles the complete login interface.
+It returns a scaffold with a centered, constrained login card so the form stays readable on
+compact screens and desktop layouts. The scrollable layout is important because the login form
+contains stacked controls that need to remain accessible on smaller viewports.
 
 App Header
 ^^^^^^^^^^
@@ -218,16 +213,18 @@ App Header
      showProfile: false,
    )
 
-The shared app header sits at the top of the screen and gives the user quick access to
-discover, create, and register actions. On this page, the sign-in action is inactive
-because the user is already on the login screen.
+The shared app header sits at the top of the login screen and provides quick access to
+discovery, creation, and registration routes. On this page, the sign-in action is intentionally
+inactive because the user is already on the login screen. This header keeps the authentication
+page connected to the rest of the app without repeating the form controls in the page body.
 
 Login Card
 ^^^^^^^^^^
 
-The login form is wrapped in a centered card with rounded corners and a shadow. This
-keeps the authentication area visually separated from the page background and focuses
-attention on the form.
+This container is the main visual wrapper for the login form. It isolates the form from the page
+background with a white card, rounded corners, and shadow so the authentication area feels focused.
+The card is especially important in this layout because the rest of the screen is intentionally
+minimal.
 
 Logo
 ^^^^
@@ -239,8 +236,10 @@ Logo
      child: Image.asset('assets/image.png', height: 64, fit: BoxFit.contain),
    )
 
-The logo section is a tappable image that allows the user to return to the previous page
-if possible. It also acts as the visual identity for the login form.
+The logo is a tappable brand image that lets the user return to the previous page if possible.
+It acts as both navigation and identity, giving the login screen a consistent top anchor. The use
+of `Navigator.maybePop` is a subtle detail because it avoids forcing a route change if there is no
+previous page to return to.
 
 Title and Intro Text
 ^^^^^^^^^^^^^^^^^^^^
@@ -250,8 +249,10 @@ Title and Intro Text
    const Text('Welcome to UniSphere'),
    const Text('Please select your role and enter your credentials.'),
 
-The title and supporting text introduce the login form and explain what the user needs
-to do next.
+These text widgets introduce the login form and tell the user what credentials are needed.
+They provide orientation before the input fields begin, which keeps the screen straightforward and
+easy to scan. The copy still references the role flow in the source, but the code comments make
+clear that role selection is no longer handled here.
 
 Email Field
 ^^^^^^^^^^^
@@ -267,9 +268,10 @@ Email Field
      validator: validateUniversityEmail,
    )
 
-The email field captures the user's university email address. It uses the shared
-authentication text field widget and validates the input with the university email
-validator before login continues.
+This field collects the user’s university email address. It uses the shared authentication text
+field widget and the shared university email validator so the format is checked before login
+continues. Normalising the input to an email-based sign-in flow keeps the credentials consistent
+with the registration screen.
 
 Password Field
 ^^^^^^^^^^^^^^
@@ -284,8 +286,10 @@ Password Field
      validator: validatePassword,
    )
 
-The password field stores the user's password and hides the text while _obscurePassword
-is true. It uses the shared password validator to check the password before submission.
+This field captures the user’s password. It hides the text while the obscured state is enabled
+and validates the password using the shared validator. The field is structurally simple, but it
+is central to the authentication flow because its value is what the backend checks against stored
+credentials.
 
 Password Visibility Toggle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -301,8 +305,9 @@ Password Visibility Toggle
      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
    )
 
-This button switches the password field between hidden and visible text. It updates the
-_obscurePassword state so the password icon and the field behavior stay in sync.
+This icon button switches the password field between hidden and visible text. It updates the
+password visibility state so the icon and the field behaviour remain synchronised. The toggle is a
+small detail, but it makes the form easier to use without affecting authentication logic.
 
 Forgot Password Link
 ^^^^^^^^^^^^^^^^^^^^
@@ -314,8 +319,9 @@ Forgot Password Link
      child: const Text('Forgot Password?'),
    )
 
-The forgot password link routes the user to the password recovery page when they need
-to reset their login details.
+This text button routes the user to the password recovery page. It gives users a direct escape
+path when they cannot remember their login details. The compact styling matters because the link
+should be available without dominating the form.
 
 Keep Me Logged In
 ^^^^^^^^^^^^^^^^^
@@ -327,8 +333,10 @@ Keep Me Logged In
      onChanged: (v) => setState(() => _keepLoggedIn = v ?? false),
    )
 
-This checkbox stores whether the user wants to stay logged in. The value is saved in
-_keepLoggedIn so the screen can track the user's preference.
+This checkbox stores whether the user wants the session to persist. The value is tracked in
+`_keepLoggedIn`, even though the actual persistence behaviour would be handled elsewhere in the
+authentication flow. It gives the login form a standard “remember me” control without complicating
+the visible layout.
 
 Login Button
 ^^^^^^^^^^^^
@@ -355,8 +363,10 @@ Login Button
            ),
    )
 
-The login button triggers the authentication flow. When _isLoading is true, it is
-disabled and replaced with a progress indicator while the login request is running.
+This button triggers the authentication handler. It disables itself and shows a progress
+indicator while the backend request is in flight, which prevents duplicate submissions. The loading
+state is important because the screen has no other obvious feedback while waiting for the backend
+response.
 
 Register Link
 ^^^^^^^^^^^^^
@@ -368,5 +378,6 @@ Register Link
      child: const Text('Register here'),
    )
 
-The register link gives new users a direct route to the registration screen if they do
-not already have an account.
+This footer link routes new users to the registration screen. It uses direct navigation so users
+who do not have an account can move into the sign-up flow immediately. The link keeps the login page
+connected to the wider auth experience without crowding the main form.
