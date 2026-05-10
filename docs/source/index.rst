@@ -56,9 +56,10 @@ Contents
 .. toctree::
   :caption: Back End
   :maxdepth: 1
-  
+
    main.dart <main>
    api_backend.dart <api_backend>
+   sqlite_backend.dart <sqlite_backend>
 
 
 
