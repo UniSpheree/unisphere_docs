@@ -42,6 +42,7 @@ Contents
 
    landing_page.dart <landing_page>
    landing_page_logged_in.dart <landing_page_logged_in>
+   create_event_screen.dart <create_event_screen>
    discover_event_screen.dart <discover_event_screen>
    event_details_screen.dart <event_details_screen>
    my_tickets_screen.dart <my_tickets_screen>
