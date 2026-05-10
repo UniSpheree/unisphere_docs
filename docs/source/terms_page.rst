@@ -1,5 +1,5 @@
 ===========================
-about_us_page.dart
+terms_page.dart
 ===========================
 
 ``terms_page.dart`` is a stateless page for displaying the terms of service for the UniSphere application. This page uses the reusable header and footer widgets, 
