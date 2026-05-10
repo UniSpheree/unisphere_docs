@@ -48,6 +48,7 @@ Contents
    login_screen.dart <login_screen>
    main.dart <main>
    about_us_page.dart <about_us_page>
+   terms_page.dart <terms_page>
 
 
 
