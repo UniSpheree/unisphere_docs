@@ -45,6 +45,7 @@ Contents
    create_event_screen.dart <create_event_screen>
    discover_event_screen.dart <discover_event_screen>
    event_details_screen.dart <event_details_screen>
+   profile_page.dart <profile_page>
    my_tickets_screen.dart <my_tickets_screen>
    my_events_page.dart <my_events_page>
    calendar_page.dart <calendar_page>
