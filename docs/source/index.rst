@@ -37,7 +37,7 @@ Contents
   installation
 
 .. toctree::
-  :caption: Front end
+  :caption: Front End
   :maxdepth: 1
 
    landing_page.dart <landing_page>
@@ -52,7 +52,15 @@ Contents
    register_screen.dart <register_screen>
    login_screen.dart <login_screen>
    forgot_password_screen.dart <forgot_password_screen>
+
+.. toctree::
+  :caption: Back End
+  :maxdepth: 1
+  
    main.dart <main>
+   api_backend.dart <api_backend>
+
+
 
 
 
