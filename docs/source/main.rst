@@ -87,6 +87,7 @@ MyApp()
       );
     }
   }
+
 MyApp creates the MaterialApp configuration, defining the app title (UniSphere), 
 global theme with seed color 0xFF2D3A8C and Material3 design. Navigation is 
 defined here with seven named routes and dynamic route generation for dashboard 
