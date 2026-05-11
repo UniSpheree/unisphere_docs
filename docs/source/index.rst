@@ -4,9 +4,6 @@ Welcome to Unisphere's documentation!
 **Unisphere** is a event-discovery website for university students,
 aimed towards students who are looking for a smoother experience when booking events.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
-
 .. note::
 
    This project is under active development.
