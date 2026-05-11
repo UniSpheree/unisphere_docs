@@ -62,4 +62,5 @@ Contents
 
    header.dart <Header>
    auth_header.dart <auth_header>
+   app_footer.dart <app_footer>
 

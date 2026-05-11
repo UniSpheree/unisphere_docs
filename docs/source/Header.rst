@@ -30,18 +30,6 @@ Header Widget
 The ``AppHeader`` widget is the primary widget for the header component. It provides responsive navigation, authentication-aware UI behaviour, 
 and route-based navigation across the UniSphere application.
 
-Main widget
------------
-Main Widget
------------
-
-.. code-block:: dart
-
-   class AppHeader extends StatelessWidget
-
-The ``AppHeader`` widget is the primary widget for the header component. It provides responsive navigation, authentication-aware UI behaviour, 
-and route-based navigation across the UniSphere application.
-
 Constructor
 -----------
 .. code-block:: dart
