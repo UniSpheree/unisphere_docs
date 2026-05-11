@@ -701,4 +701,11 @@ _MetaChip, _Pill, & _ReadOnlyField
        );
      }
    }
-These are lightweight visual accents. ``_Pill`` and ``_MetaChip`` are designed specifically for the dark gradient Hero Banner, utilizing semi-transparent white backgrounds (``Colors.white.withOpacity(0.12)``) to create contrast without clashing with the underlying colors. ``_ReadOnlyField`` is used exclusively inside the ``_openEditDialog`` modal to safely display fixed account properties (like the user's university) using a distinct grey background, visually separating them from the editable text inputs.
+
+These are lightweight visual accents. ``_Pill`` and ``_MetaChip`` are designed 
+specifically for the dark gradient Hero Banner, utilizing semi-transparent white 
+backgrounds (``Colors.white.withOpacity(0.12)``) to create contrast without clashing 
+with the underlying colors. ``_ReadOnlyField`` is used exclusively inside the 
+``_openEditDialog`` modal to safely display fixed account properties (like the 
+user's university) using a distinct grey background, visually separating them from 
+the editable text inputs.
