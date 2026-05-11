@@ -40,6 +40,7 @@ Contents
   :caption: Front End
   :maxdepth: 1
 
+   widgets <widgets>
    landing_page.dart <landing_page>
    landing_page_logged_in.dart <landing_page_logged_in>
    create_event_screen.dart <create_event_screen>
