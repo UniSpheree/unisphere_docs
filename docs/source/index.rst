@@ -47,8 +47,6 @@ Contents
    register_screen.dart <register_screen>
    login_screen.dart <login_screen>
    main.dart <main>
-   about_us_page.dart <about_us_page>
-   header.dart <Header>
 
 .. toctree::
   :caption: About & Policies
@@ -58,6 +56,10 @@ Contents
    terms_page.dart <terms_page>
    privacy_page.dart <privacy_page>
 
+.. toctree::
+  :caption: Widgets
+  :maxdepth: 1
 
-
+   header.dart <Header>
+   auth_header.dart <auth_header>
 

@@ -1,4 +1,3 @@
-===========================
 about_us_page.dart
 ===========================
 
@@ -11,7 +10,7 @@ File Location
 ::
 
    lib/pages/about_us_page.dart
-   
+
 
 Structure
 ---------
