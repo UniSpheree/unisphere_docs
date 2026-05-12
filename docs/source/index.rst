@@ -47,6 +47,7 @@ Contents
    register_screen.dart <register_screen>
    login_screen.dart <login_screen>
    main.dart <main>
+   about,terms & policy <about_terms_policy>
 
 .. toctree::
   :caption: About & Policies
