@@ -50,6 +50,7 @@ Contents
    register_screen.dart <register_screen>
    login_screen.dart <login_screen>
    forgot_password_screen.dart <forgot_password_screen>
+   utils <Utils>
 
 .. toctree::
   :caption: Back End

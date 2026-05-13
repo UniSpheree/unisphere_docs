@@ -128,3 +128,46 @@ creating an account on the Unisphere app.
       ...
     ];
 
+
+Validators.dart
+----------------
+'validators.dart' defines the shared validation functions used throughout the unisphere app. 
+This includes validation for university email addresses, password strength, and other common 
+input validation needs across the app. Used on the registration and login screens.
+
+
+Blocked email domains
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: dart
+
+    const _blockedDomains = {
+      'gmail.com',
+      'outlook.com',
+      'yahoo.com',
+      ...
+    };
+
+Defines the list of blocked email domains that are not accepted as 
+university email addresses.
+
+University email validation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: dart
+
+    String? validateUniversityEmail(String? value)
+
+Validates that a user email address is not empty, has a valid email format,
+is not from a blocked provider and belongs to a UK university.
+
+Password validation
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: dart
+
+    String? validatePassword(String? value)
+
+Validates the registration passwords against the app's password strength criteria,
+including minimum length, numeric characters and special characters. Alsochecking 
+that a password field is not empty.
