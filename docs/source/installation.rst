@@ -1,5 +1,6 @@
-Installation
-============
+======================
+Installation & running
+======================
 
 To run unisphere:
 
@@ -20,3 +21,4 @@ To run unisphere:
 .. code-block:: console
 
     flutter run
+
