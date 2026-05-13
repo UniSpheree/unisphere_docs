@@ -63,6 +63,55 @@ MyApp Configuration & Routing
 
 .. code-block:: dart
 
+  class MyApp extends StatelessWidget {
+    const MyApp({super.key});
+
+    @override
+    Widget build(BuildContext context) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'UniSphere',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2D3A8C)),
+          useMaterial3: true,
+          scaffoldBackgroundColor: const Color(0xFFF0F2F8),
+          fontFamily: 'Roboto',
+        ),
+        // ── Initial route (landing page as the app entry point)
+        initialRoute: '/',
+        routes: {
+          '/': (_) => const LandingPage(),
+          '/logged-in': (_) {
+            final user = MockBackend().currentUser;
+            return PersonalizedLandingPage(
+              userName: user?.fullName ?? 'Guest',
+              role: user?.role ?? 'Attendee',
+            );
+          },
+          '/login': (_) => const LoginScreen(),
+          '/register': (_) => const RegisterScreen(),
+          '/forgot-password': (_) => const ForgotPasswordScreen(),
+          '/profile': (_) => const ProfilePage(),
+          '/create-event': (_) => const CreateEventScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/dashboard') {
+            final role = (settings.arguments as String?) ?? 'Attendee';
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (_) => DashboardScreen(role: role),
+            );
+          }
+          return null;
+        },
+      );
+    }
+  }
+
+MyApp creates the MaterialApp configuration, defining the app title (UniSphere), 
+global theme with seed color 0xFF2D3A8C and Material3 design. Navigation is 
+defined here with seven named routes and dynamic route generation for dashboard 
+pages that require a role parameter.
    class MyApp extends StatelessWidget {
      const MyApp({super.key});
 

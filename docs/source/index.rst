@@ -61,6 +61,19 @@ Contents
 
 
 
+.. toctree::
+  :caption: About & Policies
+  :maxdepth: 1
 
+   about_us_page.dart <about_us_page>
+   terms_page.dart <terms_page>
+   privacy_page.dart <privacy_page>
 
+.. toctree::
+  :caption: Widgets
+  :maxdepth: 1
+
+   header.dart <Header>
+   auth_header.dart <auth_header>
+   app_footer.dart <app_footer>
 
