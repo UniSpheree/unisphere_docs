@@ -74,3 +74,42 @@ Date filtering logic
     }
 
 Determines whether an event date matches one or more selected date filters.
+
+pagination.dart
+----------------
+'pagination.dart' defines the pagination logic and helper functions
+which are used for splitting the event list into multiple pages for 
+better performance and user experience when browsing events. 
+
+Pagination helpers
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: dart
+
+    int eventsPerPageForWidth(double width)
+
+Returns the number of events displayed per page based on 
+screen width.
+
+.. code-block:: dart
+
+    int totalPagesForLength(int length, int itemsPerPage)
+
+Calculates total number of pages needed to display all items
+based on number of items and items per page.
+
+.. code-block:: dart
+
+    int clampPageIndex(int pageIndex, int totalPages)
+
+Ensures current page index is within valid bounds.
+
+.. code-block:: dart
+
+    List<T> paginateItems<T>(
+      List<T> items,
+      int pageIndex,
+      int itemsPerPage,
+    )
+
+Returns items for the current page based on index and items per page.
