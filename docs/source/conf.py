@@ -1,10 +1,15 @@
 # Configuration file for the Sphinx documentation builder.
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('../..'))
+
 # -- Project information
 
-project = 'Lumache'
+project = 'Unisphere'
 copyright = '2021, Graziella'
-author = 'Graziella'
+author = 'Alecxis Almoneda'
 
 release = '0.1'
 version = '0.1.0'
@@ -33,3 +38,16 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+
+# show the master toctree in the sidebar on every page
+html_sidebars = {
+    '**': [
+        'globaltoc.html',
+        'relations.html',
+        'searchbox.html',
+    ]
+}
+
+html_theme_options = {
+    'collapse_navigation': False,
+}
