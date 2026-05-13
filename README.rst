@@ -1,9 +1,8 @@
-Template for the Read the Docs tutorial
+Code documentation for the Unisphere app
 =======================================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
+This repository contains the code documentation for the Unisphere app. 
 
-Read the tutorial here:
+Link to readthedocs:
 
-https://docs.readthedocs.io/en/stable/tutorial/
+

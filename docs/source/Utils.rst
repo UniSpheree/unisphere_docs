@@ -113,3 +113,18 @@ Ensures current page index is within valid bounds.
     )
 
 Returns items for the current page based on index and items per page.
+
+unis.dart
+----------
+'unis.dart' defines the list of universities used for university selection when
+creating an account on the Unisphere app.
+
+.. code-block:: dart
+
+    const List<String> ukUniversities = [
+      'University of Oxford',
+      'University of Cambridge',
+      'Imperial College London',
+      ...
+    ];
+
