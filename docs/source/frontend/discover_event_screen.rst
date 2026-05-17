@@ -1,6 +1,6 @@
-==========================
-discover_event_screen.dart
-==========================
+=================================================
+Event discovery page - discover_event_screen.dart
+=================================================
 
 ``discover_event_screen.dart`` is the event discovery screen. It provides the
 search bar, category chips, date filters, a paginated event grid, and the
