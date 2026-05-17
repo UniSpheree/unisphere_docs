@@ -6,6 +6,8 @@ aimed towards students who are looking for a smoother experience when booking ev
 
 It allows for students to easily discover events happening around them, while also supporting event organizers in creating and managing their events.
 
+Contents
+########
 
 .. toctree::
   :maxdepth: 1
