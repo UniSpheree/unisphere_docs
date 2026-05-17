@@ -31,7 +31,13 @@ It allows for students to easily discover events happening around them, while al
   frontend/widgets
   frontend/utils
 
+.. toctree::
+  :maxdepth: 1
+  :caption: Backend
 
+  backend/sqlite_backend
+  backend/main
+  backend/api_backend
 
 
 .. note::

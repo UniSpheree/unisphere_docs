@@ -174,8 +174,12 @@ The row uses both an `InkWell` and a tappable text label so the back action is
 easy to reach. That keeps the navigation affordance obvious while still fitting
 within the compact page header area.
 
+Searching & Filtering
+---------------------
+The code for the search and filtering functions of the event discovery page
+
 Search bar
-----------
+^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -202,7 +206,7 @@ from `initialSearchQuery`. That makes it possible for other screens to open the
 discovery page with a search term already applied.
 
 Filter toggle
--------------
+^^^^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -225,7 +229,7 @@ to flip that flag. The actual filter values are stored separately in
 `_dateFilters`.
 
 Date filters
-------------
+^^^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -244,7 +248,7 @@ has a matching state entry from the start. That keeps the UI and the filtering
 logic in sync.
 
 Category chips
---------------
+^^^^^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -263,7 +267,7 @@ consistent with the rest of the app. The selected chip changes style to make
 the active filter easy to see.
 
 Search summary
---------------
+^^^^^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -281,15 +285,14 @@ The summary sits directly above the paginated grid, which helps the user see
 why the results have changed. It is tied to `_submittedSearchQuery`, not the raw
 text field content, so it reflects the committed search state.
 
-Filter helpers
-^^^^^^^^^^^^^^
+
 
 .. code-block:: dart
 
     void _setFilter(String filter) { ... }
     void _setDateFilter(String filter, bool value) { ... }
 
-These helper methods update the selected category and date filter values. They
+These are the filter helper methods that update the selected category and date filter values. They
 are called from the chips and other filter controls so the UI can stay simple
 while the state object owns the actual filter values.
 
@@ -297,8 +300,7 @@ The helpers only wrap `setState`; they do not perform the filtering themselves.
 That work happens in the computed getters later in the file so the screen keeps
 the update logic in one place.
 
-Event data getter
-^^^^^^^^^^^^^^^^^
+
 
 .. code-block:: dart
 
@@ -309,8 +311,7 @@ Event data getter
           .map((event) => { 'id': ..., 'bannerImageData': event['bannerImageData'], ... })
           .toList();
     }
-
-`_discoverEvents` converts the raw backend rows into the smaller map structure
+`_discoverEvents` is the event data getter that converts the raw backend rows into the smaller map structure
 used by the widgets on this page. It pulls out the event title, date,
 location, category, organizer, and banner image data so the UI does not have to
 work with the backend representation directly.
@@ -323,8 +324,6 @@ image or a fallback icon.
 The getter skips demo events and private events. It also keeps the banner bytes
 as `Uint8List` or `null` so the card widget can treat the image data safely.
 
-Filtering helper
-^^^^^^^^^^^^^^^^
 
 .. code-block:: dart
 
@@ -336,7 +335,7 @@ Filtering helper
       return dateFiltered.where((...) => ...).toList();
     }
 
-`_filteredEvents` is the computed list that applies the current category and
+The filtering helper `_filteredEvents` is the computed list that applies the current category and
 date filters, then narrows the result with the submitted search query. It is
 the list that eventually gets passed to the paginated grid.
 
@@ -620,12 +619,3 @@ controller, but the actual filtering only uses `_submittedSearchQuery` after
 the user commits the search. That keeps the page responsive without filtering
 on every keystroke.
 
-Footer
-------
-
-.. code-block:: dart
-
-    const AppFooter(),
-
-`AppFooter` is the shared footer widget used across the app. It closes the page
-layout and keeps the discovery screen aligned with the rest of the site.
