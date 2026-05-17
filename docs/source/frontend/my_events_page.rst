@@ -1,5 +1,5 @@
 ===================
-my_events_page.dart
+My events - my_events_page.dart
 ===================
 
 ``my_events_page.dart`` serves as the central dashboard for event organizers. It 

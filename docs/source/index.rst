@@ -21,16 +21,13 @@ It allows for students to easily discover events happening around them, while al
   frontend/about_terms_policy
   frontend/landing_pages
   frontend/registration_login
-  frontend/create_event_screen
   frontend/discover_event_screen
   frontend/event_details_screen
+  frontend/create_event_screen
   frontend/profile_page
   frontend/my_tickets_screen
   frontend/my_events_page
   frontend/calendar_page
-  frontend/register_screen
-  frontend/login_screen
-  frontend/forgot_password_screen
   frontend/widgets
   frontend/utils
 

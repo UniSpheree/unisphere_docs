@@ -1,5 +1,5 @@
 =======
-Widgets
+Widgets - app_footer.dart, auth_header.dart etc.
 =======
 
 This section contains the documentation for all reusable, stateless, 
