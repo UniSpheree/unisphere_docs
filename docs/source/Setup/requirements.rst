@@ -1,6 +1,6 @@
-============================
+=============
 Requirements
-============================
+=============
 
 You will need to have the following dependencies installed and configured before running the project:
 
