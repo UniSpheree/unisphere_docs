@@ -1,6 +1,6 @@
-=================
-Create event page
-=================
+============================================
+Create event page - create_event_screen.dart
+============================================
 
 ``create_event_screen.dart`` defines a comprehensive, dual-purpose form screen used 
 for both creating new events and editing existing ones. It is strictly protected by 

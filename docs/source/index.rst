@@ -18,7 +18,9 @@ It allows for students to easily discover events happening around them, while al
   :maxdepth: 1
   :caption: Frontend
 
+  frontend/about_terms_policy
   frontend/landing_pages
+  frontend/registration_login
   frontend/create_event_screen
   frontend/discover_event_screen
   frontend/event_details_screen
@@ -29,10 +31,6 @@ It allows for students to easily discover events happening around them, while al
   frontend/register_screen
   frontend/login_screen
   frontend/forgot_password_screen
-  frontend/about_us_page
-  frontend/about_terms_policy
-  frontend/privacy_page
-  frontend/terms_page
   frontend/widgets
   frontend/utils
 

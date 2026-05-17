@@ -1,5 +1,5 @@
 =================
-profile_page.dart
+Profile page - profile_page.dart
 =================
 
 ``profile_page.dart`` acts as the central hub and dashboard for the user's account. 

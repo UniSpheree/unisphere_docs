@@ -1,4 +1,5 @@
-landing pages - landing_page_logged_in.dart, landing_page.dart
+==============================================================
+Landing pages - landing_page_logged_in.dart, landing_page.dart
 ==============================================================
 
 Unisphere features two landing pages, one is for authenticated users, and the other is for unauthenticated users.
@@ -13,7 +14,6 @@ landing_page.dart
 It assembles the app's first impression and provides entry points for discovery,
 event creation, registration, and sign-in.
 
-^^^^^^^-------------------
 
 .. code-block:: dart
 
