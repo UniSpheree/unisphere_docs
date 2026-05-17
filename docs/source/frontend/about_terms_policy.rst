@@ -1,5 +1,6 @@
-About & Policies Pages
-======================
+============================
+About, terms and policy pages
+============================
 
 This sections contains the about, terms and privacy screens of the Unisphere app. Each of the screens follows a very similar structure and design, 
 using the reusable header and footer widgets, which are used across the app to provide easier, consistent navigation as well as information for the user.

@@ -1,5 +1,5 @@
 ======================
-my_tickets_screen.dart
+My tickets page - my_tickets_screen.dart
 ======================
 
 ``my_tickets_screen.dart`` manages the user's digital ticket wallet. It acts as

@@ -1,5 +1,5 @@
 =========================
-event_details_screen.dart
+Event details page - event_details_screen.dart
 =========================
 
 ``event_details_screen.dart`` is responsible for rendering the comprehensive, 
